@@ -72,7 +72,22 @@ public class MemberController {
         MemberDetailDTO member = ms.findById(memberId);
         model.addAttribute("member", member);
         return "member/findById";
+    }
 
+    @PostMapping("{memberId}")
+    public @ResponseBody MemberDetailDTO detail(@PathVariable("memberId") Long memberId)    {
+        MemberDetailDTO member = ms.findById(memberId);
+        return member;
+    }
+
+
+
+
+    // 회원삭제 (/member/delete/5)
+    @GetMapping ("delete/{memberId}")
+    public String deleteById(@PathVariable("memberId") Long memberId)   {
+        ms.deleteById(memberId);
+        return "redirect:/member/";
     }
 
 }
