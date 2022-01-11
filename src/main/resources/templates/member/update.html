@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>update</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script>
+        const memberUpdate = () => {
+          console.log('수정함수호출');
+          //DOM API를 이용하여 memberId, 이메일, 번호, 이름을 가져와 javascript 함수에 담으세요~
+            // 1번 getElement
+            /*const memberId = document.getElementById('memberId').value;*/
+            const id = document.getElementById('memberId').value;
+            // 현재로선 form에 memberId의 값이 나와있지 않기때문에 form에 id값을 추가한다.
+
+            // 2번 QuerySelector.
+            // 모든 요소에 전부 접근할 수 있기때문에 id값을 찾는 #을 꼭 적어줘야 해당 값만 가져온다.
+            // class를 검색할 시 . <- 을 적어넣으면 된다.
+            /*const memberEmail = document.querySelector('#memberEmail').value;*/
+            const email = document.querySelector('#memberEmail').value;
+
+            // 3번 jquery 문법.
+            /*const memberPassword = $('memberPassword').val();*/
+            const pw = $('memberPassword').val();
+
+            // 4번 json 방식??? 아 아니네, 그냥 그대로 입력하는 형식.
+            /*const memberName = '[[${member.memberName}]]';*/
+            const name = '[[${member.memberName}]]';
+
+            console.log(id,email,pw,name);
+
+            //javascript object(자바스크립트 객체)에 담아 ajax로 컨트롤러에 보냄.
+            const updateData = JSON.stringify({
+                memberId: id,
+                memberEmail: email,
+                memberPassword: pw,
+                memberName: name
+            });
+                const reqUrl = "/member/"+id;
+                console.log(updateData);
+                $.ajax({
+                    type:'put', //수정을 위한 요청방식 put, patch
+                    data: updateData,
+                    url:reqUrl,
+                    contentType:'application/json', //json으로 보낼때는 꼭 써야함.
+                    success: function ()    {
+                        location.href = "/member/" + id;
+                    },
+                    error: function ()  {
+                        alert('ajax 실패');
+                    }
+                })
+
+
+        }    
+        
+    </script>
+</head>
+<body>
+<h2>update.html</h2>
+
+<form action = "/member/update" method = "post">
+    <input type = "hidden" id="memberId" name="memberId" th:value="${member.memberId}"><br>
+    <input type = "text" id="memberEmail" name="memberEmail" th:value="${member.memberEmail}" placeholder="이메일" readonly><br>
+    <input type = "text" id="memberPassword" name="memberPassword" th:value="${member.memberPassword}" readonly placeholder="비번"><br>
+    <input type = "text" id="memberName" name="memberName" th:value="${member.memberName}"  placeholder="이름"><br>
+    <input type = "submit" value="수정">
+    <input type = "button" value="수정(put)" th:onclick="memberUpdate()">
+</form>
+</body>
+</html>

@@ -42,6 +42,34 @@
 
                 })
         }
+
+       function deleteById(memberId)    {
+           console.log(memberId);
+           const reqUrl="/member/"+ memberId;
+
+           $.ajax({
+               type: 'delete',
+               url:reqUrl,
+               /*dataType: 'json', 데이터를 받아올 필요 없음.*/
+               success: function ()   {
+                   // 삭제를 성공하면 회원목록 페이지를 다시 요청하도록 주소재요청
+                   location.href = '/member/'; //js문법
+               },
+                    error : function () {
+                            alert("ajax실패");
+                    }
+           });
+       }
+       /* 요즘방식의 함수선언문...  */
+       // 함수이름 : deleteFn   /   매개변수 : memberId
+        const deleteFn = (memberId) => {
+            console.log(memberId);
+        }
+
+        const deleteFn = () =>  {
+            //매개변수가 없다면 이렇게 사용
+        }
+
     </script>
 
 </head>
@@ -72,8 +100,15 @@
                 <td th:text="${member.memberName}"> 이름 </td>
                 <td><a th:href="@{|/member/${member.memberId}|}">조회</a></td>
                 <td><button th:onclick="detail([[${member.memberId}]])">조회ajax</button></td>
-                <td><a th:href="@{|/member/delete/${member.memberId}|}">삭제</a></td>
-                <td></td>
+                <td><a th:href="@{|/member/delete/${member.memberId}|}">삭제delete</a></td>
+
+                <td><!--220110-->
+                    <button th:onclick="deleteById([[${member.memberId}]])">삭제ajax</button>
+                    <!-- 삭제버튼 클릭시 deleteById 함수호출(Delete 는 예약어라서 사용할 수 없음),
+                    함수호출하면서 memberId 넘겨야 함.
+                    delete 함수(): /member/memberId 주소를 요청하며, 요청 메서드는 delete -->
+
+                </td>
 
             </tr>
         </tbody>

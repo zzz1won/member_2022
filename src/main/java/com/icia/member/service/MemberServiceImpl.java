@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.icia.member.dto.MemberDetailDTO.toMemberDetailDTO;
+
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
@@ -51,7 +53,7 @@ public class MemberServiceImpl implements MemberService {
         List<MemberEntity> memberEntityList = mr.findAll();
         List<MemberDetailDTO> memberList = new ArrayList<>();
         for (MemberEntity m: memberEntityList)  {
-            memberList.add(MemberDetailDTO.toMemberDetailDTO(m));
+            memberList.add(toMemberDetailDTO(m));
         }
         return memberList;
     }
@@ -61,12 +63,34 @@ public class MemberServiceImpl implements MemberService {
         Optional<MemberEntity> memberEntityOptional = mr.findById(memberId);
         MemberEntity memberEntity = memberEntityOptional.get();
 
-        MemberDetailDTO memberDetailDTO = MemberDetailDTO.toMemberDetailDTO(memberEntity);
+        MemberDetailDTO memberDetailDTO = toMemberDetailDTO(memberEntity);
         return memberDetailDTO;
     }
 
     @Override
     public void deleteById(Long memberId) {
         mr.deleteById(memberId);
+
+    }
+
+    @Override
+    public MemberDetailDTO findByEmail(String memberEmail) {
+        MemberEntity memberEntity = mr.findByMemberEmail(memberEmail);
+        MemberDetailDTO memberDetailDTO = MemberDetailDTO.toMemberDetailDTO(memberEntity);
+        return memberDetailDTO;
+    }
+
+    @Override
+    public Long update(MemberDetailDTO memberDetailDTO) {
+        // update 처리시 save 메서드를 호출
+        // repository는 entity 객체만 받기때문에
+        // memberDetailDTO > MemberEntity 해줘야함.
+
+        /*MemberEntity memberEntity = MemberEntity.toUpdateMember(memberDetailDTO);
+        Long memberId = mr.save(memberEntity).getId();*/
+
+        return mr.save(MemberEntity.toUpdateMember(memberDetailDTO)).getId();
+        //Jpa에서 save를 할 때 pk값을 같이 보내면 코드 실행시 pk값을 인지해서,
+        // 계속 재생성하지않고 해당 데이터를 찾아 수정해준다.
     }
 }
